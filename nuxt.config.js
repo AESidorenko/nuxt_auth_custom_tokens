@@ -1,6 +1,11 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
+
+  publicRuntimeConfig: {
+    gpnmUserKey: process.env.GPNM_USER_KEY,
+  },
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - front',
@@ -41,26 +46,32 @@ export default {
   ],
   auth: {
     strategies: {
-      refresh: {
+      local: {
+        scheme: 'refresh',
         watchLoggedIn: true,
         endpoints: {
-          home: '/',
-          login: {url: '/login', method: 'get'},
+          login: {url: '/token', method: 'post'},
           refresh: {url: '/refresh', method: 'get'},
           user: false,
         },
         token: {
-          property: false,
+          property: 'token',
           type: 'Bearer',
           maxAge: 60 * 10,
         },
         refreshToken: {
-          property: 'token',
-          type: 'Bearer',
+          required: false,
           maxAge: 60 * 60 * 24,
         },
         user: {
           autoFetch: false,
+          property: false,
+        },
+        rewriteRedirects: false,
+        redirect: {
+          logout: '/logout',
+          login: "/login",
+          home: "/",
         },
       }
     }
